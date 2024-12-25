@@ -1,5 +1,4 @@
 import time
-import asyncio 
 
 from pyrogram import filters
 from pyrogram.enums import ChatType
@@ -111,9 +110,8 @@ async def start_pm(client, message: Message, _):
     await asyncio.sleep(0.1)
     await lol.edit_text("ꜱᴛᴀʀᴛɪɴɢ...")
     await lol.delete()        
-        
-        
-    await update.effective.message.reply_photo(
+         
+    await message.reply_photo(
             photo=config.START_IMG_URL,
             caption=_["start_2"].format(message.from_user.mention, app.mention),
             reply_markup=InlineKeyboardMarkup(out),

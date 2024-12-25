@@ -23,6 +23,9 @@ from AnonXMusic.utils.inline import help_pannel, private_panel, start_panel
 from config import BANNED_USERS
 from strings import get_string
 
+PM_START_TEX = """
+ʜᴇʟʟᴏ `{}`, ʜᴏᴡ ᴀʀᴇ ʏᴏᴜ \nᴡᴀɪᴛ ᴀ ᴍᴏᴍᴇɴᴛ ʙʀᴏ . . . 
+"""
 
 @app.on_message(filters.command(["start"]) & filters.private & ~BANNED_USERS)
 @LanguageStart
@@ -84,12 +87,37 @@ async def start_pm(client, message: Message, _):
                 )
     else:
         out = private_panel(_)
-        await message.reply_photo(
+        lol = await message.reply_text(PM_START_TEX.format(message.from_user.mention))
+        
+    await asyncio.sleep(0.1)
+    await lol.edit_text("🌸")
+    await asyncio.sleep(0.1)
+    await lol.edit_text("ꜱᴛᴀʀᴛɪɴɢ.")
+    await asyncio.sleep(0.1)
+    await lol.edit_text("ꜱᴛᴀʀᴛɪɴɢ..")
+    await asyncio.sleep(0.1)
+    await lol.edit_text("ꜱᴛᴀʀᴛɪɴɢ...")
+    await asyncio.sleep(0.2)
+    await lol.edit_text("ꜱᴛᴀʀᴛɪɴɢ.")
+    await asyncio.sleep(0.1)
+    await lol.edit_text("ꜱᴛᴀʀᴛɪɴɢ..")
+    await asyncio.sleep(0.1)
+    await lol.edit_text("ꜱᴛᴀʀᴛɪɴɢ...")
+    await asyncio.sleep(0.2)
+    await lol.edit_text("ꜱᴛᴀʀᴛɪɴɢ.")
+    await asyncio.sleep(0.1)
+    await lol.edit_text("ꜱᴛᴀʀᴛɪɴɢ..")
+    await asyncio.sleep(0.1)
+    await lol.edit_text("ꜱᴛᴀʀᴛɪɴɢ...")
+    await lol.delete()        
+        
+        
+    await update.effective.message.reply_photo(
             photo=config.START_IMG_URL,
             caption=_["start_2"].format(message.from_user.mention, app.mention),
             reply_markup=InlineKeyboardMarkup(out),
         )
-        if await is_on_off(2):
+    if await is_on_off(2):
             return await app.send_message(
                 chat_id=config.LOGGER_ID,
                 text=f"{message.from_user.mention} ᴊᴜsᴛ sᴛᴀʀᴛᴇᴅ ᴛʜᴇ ʙᴏᴛ.\n\n<b>ᴜsᴇʀ ɪᴅ :</b> <code>{message.from_user.id}</code>\n<b>ᴜsᴇʀɴᴀᴍᴇ :</b> @{message.from_user.username}",

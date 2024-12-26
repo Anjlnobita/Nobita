@@ -3,7 +3,7 @@ import os
 from datetime import datetime, timedelta
 from typing import Union
 
-from pytgcalls.types.stream import StreamType
+from pytgcalls.types import StreamType
 
 from pyrogram import Client
 from pyrogram.types import InlineKeyboardMarkup

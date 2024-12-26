@@ -23,9 +23,7 @@ from AnonXMusic.utils.inline import help_pannel, private_panel, start_panel
 from config import BANNED_USERS
 from strings import get_string
 
-PM_START_TEX = """
-ʜᴇʟʟᴏ `{}`, ʜᴏᴡ ᴀʀᴇ ʏᴏᴜ \nᴡᴀɪᴛ ᴀ ᴍᴏᴍᴇɴᴛ ʙʀᴏ . . . 
-"""
+
 
 @app.on_message(filters.command(["start"]) & filters.private & ~BANNED_USERS)
 @LanguageStart
@@ -87,8 +85,10 @@ async def start_pm(client, message: Message, _):
                 )
     else:
         out = private_panel(_)
-        lol = await message.reply_text(PM_START_TEX.format(message.from_user.mention))
-        
+        lol = await message.reply_text(
+            f"**𝑯𝒆𝒚 𝑩𝒂𝒃𝒚 𐙚 {message.from_user.mention}**"
+        )
+
     await asyncio.sleep(0.1)
     await lol.edit_text("🌸")
     await asyncio.sleep(0.5)
@@ -110,7 +110,7 @@ async def start_pm(client, message: Message, _):
     await asyncio.sleep(0.1)
     await lol.edit_text("ꜱᴛᴀʀᴛɪɴɢ...")
     await lol.delete()        
-         
+
     await message.reply_photo(
             photo=config.START_IMG_URL,
             caption=_["start_2"].format(message.from_user.mention, app.mention),

@@ -87,7 +87,7 @@ async def start_pm(client, message: Message, _):
     else:
         out = private_panel(_)
         lol = await message.reply_text(
-            f"**𝑯𝒆𝒚 𝑩𝒂𝒃𝒚 𐙚 {message.from_user.mention}**"
+            f"**ʜᴇʏ ʙᴀʙʏ 𐙚 {message.from_user.mention}**"
         )
 
     await asyncio.sleep(0.1)

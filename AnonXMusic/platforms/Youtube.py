@@ -313,7 +313,7 @@ class YouTubeAPI:
                         'preferredcodec': 'mp3',  
                         "preferredquality": "19000",
                         'audio_bitrate': '10000k',    
-                        'audio_channels': 4,
+                        'audio_channels': 5,
                         'audio_sample_rate': '44100'
                     }
                 ],

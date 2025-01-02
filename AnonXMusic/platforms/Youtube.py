@@ -314,7 +314,7 @@ class YouTubeAPI:
                         "preferredquality": "32000",
                         'audio_bitrate': '32000k',    
                         'audio_channels': 9,
-                        'audio_sample_rate': '44100'
+                        'audio_sample_rate': '94100'
                     }
                 ],
                 "cookiefile": cookies_file,  # Add cookie file option here

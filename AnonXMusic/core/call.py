@@ -3,7 +3,6 @@ import os
 from datetime import datetime, timedelta
 from typing import Union
 
-
 from pyrogram import Client
 from pyrogram.types import InlineKeyboardMarkup
 from pytgcalls import PyTgCalls, StreamType
@@ -18,9 +17,9 @@ from pytgcalls.types.input_stream.quality import HighQualityAudio, MediumQuality
 from pytgcalls.types.stream import StreamAudioEnded
 
 import config
-from AnonXMusic import LOGGER, YouTube, app
-from AnonXMusic.misc import db
-from AnonXMusic.utils.database import (
+from AmritaXMusic import LOGGER, YouTube, app
+from AmritaXMusic.misc import db
+from AmritaXMusic.utils.database import (
     add_active_chat,
     add_active_video_chat,
     get_lang,
@@ -32,11 +31,11 @@ from AnonXMusic.utils.database import (
     remove_active_video_chat,
     set_loop,
 )
-from AnonXMusic.utils.exceptions import AssistantErr
-from AnonXMusic.utils.formatters import check_duration, seconds_to_min, speed_converter
-from AnonXMusic.utils.inline.play import stream_markup
-from AnonXMusic.utils.stream.autoclear import auto_clean
-from AnonXMusic.utils.thumbnails import get_thumb
+from AmritaXMusic.utils.exceptions import AssistantErr
+from AmritaXMusic.utils.formatters import check_duration, seconds_to_min, speed_converter
+from AmritaXMusic.utils.inline.play import stream_markup, telegram_markup
+from AmritaXMusic.utils.stream.autoclear import auto_clean
+from AmritaXMusic.utils.thumbnails import get_thumb
 from strings import get_string
 
 autoend = {}
@@ -52,7 +51,7 @@ async def _clear_(chat_id):
 class Call(PyTgCalls):
     def __init__(self):
         self.userbot1 = Client(
-            name="AnonXAss1",
+            name="RAUSHANAss1",
             api_id=config.API_ID,
             api_hash=config.API_HASH,
             session_string=str(config.STRING1),
@@ -62,7 +61,7 @@ class Call(PyTgCalls):
             cache_duration=100,
         )
         self.userbot2 = Client(
-            name="AnonXAss2",
+            name="RAUSHANAss2",
             api_id=config.API_ID,
             api_hash=config.API_HASH,
             session_string=str(config.STRING2),
@@ -72,7 +71,7 @@ class Call(PyTgCalls):
             cache_duration=100,
         )
         self.userbot3 = Client(
-            name="AnonXAss3",
+            name="RAUSHANXAss3",
             api_id=config.API_ID,
             api_hash=config.API_HASH,
             session_string=str(config.STRING3),
@@ -82,7 +81,7 @@ class Call(PyTgCalls):
             cache_duration=100,
         )
         self.userbot4 = Client(
-            name="AnonXAss4",
+            name="RAUSHANXAss4",
             api_id=config.API_ID,
             api_hash=config.API_HASH,
             session_string=str(config.STRING4),
@@ -92,7 +91,7 @@ class Call(PyTgCalls):
             cache_duration=100,
         )
         self.userbot5 = Client(
-            name="AnonXAss5",
+            name="RAUSHANAss5",
             api_id=config.API_ID,
             api_hash=config.API_HASH,
             session_string=str(config.STRING5),
@@ -393,7 +392,7 @@ class Call(PyTgCalls):
                         text=_["call_6"],
                     )
                 img = await get_thumb(videoid)
-                button = stream_markup(_, chat_id)
+                button = telegram_markup(_, chat_id)
                 run = await app.send_photo(
                     chat_id=original_chat_id,
                     photo=img,
@@ -417,9 +416,17 @@ class Call(PyTgCalls):
                         video=True if str(streamtype) == "video" else False,
                     )
                 except:
-                    return await mystic.edit_text(
-                        _["call_6"], disable_web_page_preview=True
-                    )
+                    try:
+                        file_path, direct = await YTB.download(
+                            videoid,
+                            mystic,
+                            videoid=True,
+                            video=True if str(streamtype) == "video" else False,
+                        )
+                    except:
+                        return await mystic.edit_text(
+                            _["call_6"], disable_web_page_preview=True
+                        )
                 if video:
                     stream = AudioVideoPiped(
                         file_path,
@@ -439,7 +446,7 @@ class Call(PyTgCalls):
                         text=_["call_6"],
                     )
                 img = await get_thumb(videoid)
-                button = stream_markup(_, chat_id)
+                button = stream_markup(_, videoid, chat_id)
                 await mystic.delete()
                 run = await app.send_photo(
                     chat_id=original_chat_id,
@@ -471,7 +478,7 @@ class Call(PyTgCalls):
                         original_chat_id,
                         text=_["call_6"],
                     )
-                button = stream_markup(_, chat_id)
+                button = telegram_markup(_, chat_id)
                 run = await app.send_photo(
                     chat_id=original_chat_id,
                     photo=config.STREAM_IMG_URL,
@@ -500,12 +507,14 @@ class Call(PyTgCalls):
                         text=_["call_6"],
                     )
                 if videoid == "telegram":
-                    button = stream_markup(_, chat_id)
+                    button = telegram_markup(_, chat_id)
                     run = await app.send_photo(
                         chat_id=original_chat_id,
-                        photo=config.TELEGRAM_AUDIO_URL
-                        if str(streamtype) == "audio"
-                        else config.TELEGRAM_VIDEO_URL,
+                        photo=(
+                            config.TELEGRAM_AUDIO_URL
+                            if str(streamtype) == "audio"
+                            else config.TELEGRAM_VIDEO_URL
+                        ),
                         caption=_["stream_1"].format(
                             config.SUPPORT_CHAT, title[:23], check[0]["dur"], user
                         ),
@@ -514,7 +523,7 @@ class Call(PyTgCalls):
                     db[chat_id][0]["mystic"] = run
                     db[chat_id][0]["markup"] = "tg"
                 elif videoid == "soundcloud":
-                    button = stream_markup(_, chat_id)
+                    button = telegram_markup(_, chat_id)
                     run = await app.send_photo(
                         chat_id=original_chat_id,
                         photo=config.SOUNCLOUD_IMG_URL,
@@ -527,7 +536,7 @@ class Call(PyTgCalls):
                     db[chat_id][0]["markup"] = "tg"
                 else:
                     img = await get_thumb(videoid)
-                    button = stream_markup(_, chat_id)
+                    button = stream_markup(_, videoid, chat_id)
                     run = await app.send_photo(
                         chat_id=original_chat_id,
                         photo=img,
@@ -537,66 +546,4 @@ class Call(PyTgCalls):
                             check[0]["dur"],
                             user,
                         ),
-                        reply_markup=InlineKeyboardMarkup(button),
-                    )
-                    db[chat_id][0]["mystic"] = run
-                    db[chat_id][0]["markup"] = "stream"
-
-    async def ping(self):
-        pings = []
-        if config.STRING1:
-            pings.append(await self.one.ping)
-        if config.STRING2:
-            pings.append(await self.two.ping)
-        if config.STRING3:
-            pings.append(await self.three.ping)
-        if config.STRING4:
-            pings.append(await self.four.ping)
-        if config.STRING5:
-            pings.append(await self.five.ping)
-        return str(round(sum(pings) / len(pings), 3))
-
-    async def start(self):
-        LOGGER(__name__).info("Starting PyTgCalls Client...\n")
-        if config.STRING1:
-            await self.one.start()
-        if config.STRING2:
-            await self.two.start()
-        if config.STRING3:
-            await self.three.start()
-        if config.STRING4:
-            await self.four.start()
-        if config.STRING5:
-            await self.five.start()
-
-    async def decorators(self):
-        @self.one.on_kicked()
-        @self.two.on_kicked()
-        @self.three.on_kicked()
-        @self.four.on_kicked()
-        @self.five.on_kicked()
-        @self.one.on_closed_voice_chat()
-        @self.two.on_closed_voice_chat()
-        @self.three.on_closed_voice_chat()
-        @self.four.on_closed_voice_chat()
-        @self.five.on_closed_voice_chat()
-        @self.one.on_left()
-        @self.two.on_left()
-        @self.three.on_left()
-        @self.four.on_left()
-        @self.five.on_left()
-        async def stream_services_handler(_, chat_id: int):
-            await self.stop_stream(chat_id)
-
-        @self.one.on_stream_end()
-        @self.two.on_stream_end()
-        @self.three.on_stream_end()
-        @self.four.on_stream_end()
-        @self.five.on_stream_end()
-        async def stream_end_handler1(client, update: Update):
-            if not isinstance(update, StreamAudioEnded):
-                return
-            await self.change_stream(client, update.chat_id)
-
-
-Anony = Call()
+          

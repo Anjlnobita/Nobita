@@ -607,4 +607,4 @@ class Call(PyTgCalls):
             await self.change_stream(client, update.chat_id)
 
 
-RAUSHAN = Call()
+Anony = Call()

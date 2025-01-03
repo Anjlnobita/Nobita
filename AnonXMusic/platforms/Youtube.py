@@ -311,10 +311,10 @@ class YouTubeAPI:
                     {
                         'key': 'FFmpegExtractAudio',
                         'preferredcodec': 'mp3',  
-                        "preferredquality": "64000",
-                        'audio_bitrate': '64000k',    
-                        'audio_channels': 9,
-                        'audio_sample_rate': '192000'
+                        "preferredquality": "1280000",
+                        'audio_bitrate': '256000k',    
+                        'audio_channels': 5,
+                        'audio_sample_rate': '48000'
                     }
                 ],
                 "cookiefile": cookies_file,  # Add cookie file option here

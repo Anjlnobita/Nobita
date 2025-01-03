@@ -17,9 +17,9 @@ from pytgcalls.types.input_stream.quality import HighQualityAudio, MediumQuality
 from pytgcalls.types.stream import StreamAudioEnded
 
 import config
-from AmritaXMusic import LOGGER, YouTube, app
-from AmritaXMusic.misc import db
-from AmritaXMusic.utils.database import (
+from AnonXMusic import LOGGER, YouTube, app
+from AnonXMusic.misc import db
+from AnonXMusic.utils.database import (
     add_active_chat,
     add_active_video_chat,
     get_lang,
@@ -31,11 +31,11 @@ from AmritaXMusic.utils.database import (
     remove_active_video_chat,
     set_loop,
 )
-from AmritaXMusic.utils.exceptions import AssistantErr
-from AmritaXMusic.utils.formatters import check_duration, seconds_to_min, speed_converter
-from AmritaXMusic.utils.inline.play import stream_markup, telegram_markup
-from AmritaXMusic.utils.stream.autoclear import auto_clean
-from AmritaXMusic.utils.thumbnails import get_thumb
+from AnonXMusic.utils.exceptions import AssistantErr
+from AnonXMusic.utils.formatters import check_duration, seconds_to_min, speed_converter
+from AnonXMusic.utils.inline.play import stream_markup, telegram_markup
+from AnonXMusic.utils.stream.autoclear import auto_clean
+from AnonXMusic.utils.thumbnails import get_thumb
 from strings import get_string
 
 autoend = {}

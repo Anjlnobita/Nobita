@@ -1,5 +1,3 @@
-# AppleAPI Implementation
-
 import re
 from typing import Union
 

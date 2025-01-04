@@ -6,15 +6,11 @@ import time
 import threading
 from AnonXMusic import app
 
-
-
 # Path to cookies file
 cookies_file = "assets/cookies.txt"
 
 # Function to search songs (You need to implement actual search logic)
 def search_songs(query, offset=0, limit=10):
-    # This should be replaced with actual search logic
-    # Mocking search results with song names and durations
     return [(f"{query} Song {i+1 + offset}", f"{(i+1 + offset) * 60} seconds") for i in range(limit)]
 
 # Function to download song from YouTube in M4A format
@@ -38,7 +34,7 @@ def download_song(song_name, cookies_file):
                 'audio_sample_rate': '44100'
             }
         ],
-        "cookiefile": cookies_file,  # Add cookie file option here
+        "cookiefile": cookies_file,
     }
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
@@ -65,13 +61,12 @@ def find(client, message):
         return
 
     songs = search_songs(query)
-    
-    # Create inline keyboard buttons
+
     buttons = [[InlineKeyboardButton(f"{duration} - {name}", callback_data=name)] for name, duration in songs]
     buttons.append([InlineKeyboardButton("Next Page", callback_data=f"next_{query}_10")])
-    
+
     reply_markup = InlineKeyboardMarkup(buttons)
-    
+
     client.send_message(chat_id, "Select a song:", reply_markup=reply_markup)
 
 # Callback query handler for inline buttons
@@ -79,31 +74,25 @@ def find(client, message):
 def handle_callback_query(client, callback_query):
     chat_id = callback_query.message.chat.id
     data = callback_query.data
-    
+
     if data.startswith("next_"):
-        # Extract query and offset from callback data
         parts = data.split("_")
         query = parts[1]
         offset = int(parts[2])
-        
-        # Fetch next set of songs
+
         songs = search_songs(query, offset=offset)
         buttons = [[InlineKeyboardButton(f"{duration} - {name}", callback_data=name)] for name, duration in songs]
         buttons.append([InlineKeyboardButton("Next Page", callback_data=f"next_{query}_{offset + 10}")])
-        
+
         reply_markup = InlineKeyboardMarkup(buttons)
-        
+
         callback_query.message.edit_reply_markup(reply_markup=reply_markup)
     else:
-        # Download song
         song_name = data
         file_path = download_song(song_name, cookies_file)
-        
+
         if file_path:
-            # Send the song to the user
             client.send_document(chat_id, document=file_path)
-            
-            # Schedule file deletion after 20 minutes
             threading.Thread(target=delete_file_after_delay, args=(file_path,)).start()
         else:
             client.send_message(chat_id, f"Failed to download {song_name}. Please try again.")

@@ -59,10 +59,7 @@ async def handle_callback_query(client, callback_query):
             {
                 "key": "FFmpegExtractAudio",
                 "preferredcodec": "m4a",
-                "preferredquality": "3200000",
-                "audio_bitrate": "384000k",    
-                "audio_channels": 2,
-                "audio_sample_rate": "1024000"
+                "preferredquality": "3200000"
             }
         ],
     }

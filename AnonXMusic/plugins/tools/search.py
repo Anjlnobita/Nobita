@@ -86,7 +86,7 @@ async def handle_callback_query(client, callback_query):
             duration = info_dict.get('duration', 0)
             views = info_dict.get('view_count', 0)
 
-        caption = f"**Title:** {title}\n**Duration:** `{time.strftime('%H:%M:%S', time.gmtime(duration))}`\n**Views:** `{views}`\n**Requested by:** {callback_query.from_user.mention}"
+        caption = f"Title: {title}\nDuration: {time.strftime('%H:%M:%S', time.gmtime(duration))}\nViews: {views}\nRequested by: {callback_query.from_user.mention}"
 
         await client.send_audio(
             chat_id,

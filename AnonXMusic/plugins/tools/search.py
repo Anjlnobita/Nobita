@@ -8,7 +8,7 @@ import requests
 from youtube_search import YoutubeSearch
 from AnonXMusic import app
 
-
+cookies_file = "assets/cookies.txt"
 
 # Function to convert time to seconds
 def time_to_seconds(time):
@@ -28,7 +28,7 @@ async def download_and_send_audio(client, chat_id, url_suffix, callback_data=Non
         "outtmpl": "downloads/%(title)s.%(ext)s",
         "quiet": True,
         "no_warnings": True,
-        "cookiefile": "cookies.txt",  # Use cookies.txt for authentication
+        "cookiefile": "cookies_file",  # Use cookies.txt for authentication
         "postprocessors": [
             {
                 "key": "FFmpegExtractAudio",
@@ -44,7 +44,7 @@ async def download_and_send_audio(client, chat_id, url_suffix, callback_data=Non
         duration = results[0]["duration"]
         views = results[0]["views"]
     except Exception as e:
-        await client.send_message(chat_id, "**😴 Song not found on YouTube.**\n\n» Please check the spelling and try again!")
+        await client.send_message(chat_id, "**😴 Song not found**")
         print(str(e))
         return
 

@@ -4,7 +4,9 @@ import yt_dlp
 import os
 import time
 import threading
+from logging import logger 
 from AnonXMusic import app  # Importing the existing app
+
 
 # Path to cookies file
 cookies_file = "assets/cookies.txt"
@@ -30,8 +32,8 @@ def download_song(song_name, cookies_file):
             {
                 'key': 'FFmpegExtractAudio',
                 'preferredcodec': 'm4a',
-                "preferredquality": "320",
-                'audio_bitrate': '384k',
+                "preferredquality": "192",
+                'audio_bitrate': '192k',
                 'audio_channels': 2,
                 'audio_sample_rate': '44100'
             }
@@ -42,7 +44,7 @@ def download_song(song_name, cookies_file):
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             ydl.download([f"ytsearch:{song_name}"])
     except Exception as e:
-        print(f"Error downloading {song_name}: {e}")
+        logging.error(f"Error downloading {song_name}: {e}")
         return None
     return fpath
 
@@ -91,10 +93,13 @@ async def handle_callback_query(client, callback_query):
         await callback_query.message.edit_reply_markup(reply_markup=reply_markup)
     else:
         song_name = data
+        logging.info(f"Downloading song: {song_name}")
         file_path = download_song(song_name, cookies_file)
 
         if file_path:
+            logging.info(f"Sending file: {file_path}")
             await client.send_document(chat_id, document=file_path)
             threading.Thread(target=delete_file_after_delay, args=(file_path,)).start()
         else:
+            logging.error(f"Failed to download {song_name}")
             await client.send_message(chat_id, f"Failed to download {song_name}. Please try again.")

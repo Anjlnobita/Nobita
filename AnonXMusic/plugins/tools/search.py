@@ -1,3 +1,4 @@
+# Song bot found error fix
 from pyrogram import filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 import yt_dlp
@@ -7,8 +8,6 @@ import threading
 import requests
 from youtube_search import YoutubeSearch
 from AnonXMusic import app
-
-
 
 # Function to convert time to seconds
 def time_to_seconds(time):
@@ -101,7 +100,7 @@ async def find(client, message):
             title = result['title'][:40]
             duration = result['duration']
             buttons.append(InlineKeyboardButton(f"{title} - {duration}", callback_data=result['url_suffix']))
-        
+
         # Pagination: Display only 5 buttons per page
         pages = [buttons[i:i + 5] for i in range(0, len(buttons), 5)]
         page_data = {"pages": pages, "current_page": 0}
@@ -129,7 +128,7 @@ async def handle_callback_query(client, callback_query):
             title = result['title'][:40]
             duration = result['duration']
             buttons.append(InlineKeyboardButton(f"{title} - {duration}", callback_data=result['url_suffix']))
-        
+
         # Pagination: Display only 5 buttons per page
         pages = [buttons[i:i + 5] for i in range(0, len(buttons), 5)]
         page_buttons = pages[page_number] + [InlineKeyboardButton("Next Page", callback_data=f"next_page_{page_number + 1}")]

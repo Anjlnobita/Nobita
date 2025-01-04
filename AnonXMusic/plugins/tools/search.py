@@ -1,4 +1,3 @@
-# Song bot found error fix
 from pyrogram import filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 import yt_dlp
@@ -29,7 +28,7 @@ async def download_and_send_audio(client, chat_id, url_suffix, callback_data=Non
         "outtmpl": "downloads/%(title)s.%(ext)s",
         "quiet": True,
         "no_warnings": True,
-        "cookiefile": "cookies_file",  # Use cookies.txt for authentication
+        "cookiefile": cookies_file,  # Use cookies.txt for authentication
         "postprocessors": [
             {
                 "key": "FFmpegExtractAudio",
@@ -101,12 +100,11 @@ async def find(client, message):
         for i, result in enumerate(results):
             title = result['title'][:40]
             duration = result['duration']
-            buttons.append(InlineKeyboardButton(f"{title} - {duration}", callback_data=result['url_suffix']))
+            buttons.append(InlineKeyboardButton(f"{title} - {duration}", callback_data=f"{query}|{result['url_suffix']}"))
 
         # Pagination: Display only 5 buttons per page
         pages = [buttons[i:i + 5] for i in range(0, len(buttons), 5)]
-        page_data = {"pages": pages, "current_page": 0}
-        page_buttons = pages[0] + [InlineKeyboardButton("Next Page", callback_data="next_page_1")]
+        page_buttons = pages[0] + [InlineKeyboardButton("Next Page", callback_data=f"next_page_1|{query}")]
 
         reply_markup = InlineKeyboardMarkup(page_buttons)
         await client.send_message(chat_id, "Select a song:", reply_markup=reply_markup)
@@ -122,21 +120,25 @@ async def handle_callback_query(client, callback_query):
 
     if data.startswith("next_page_"):
         # Handle pagination
-        page_number = int(data.split("_")[2])
-        query = callback_query.message.reply_markup.inline_keyboard[0][0].callback_data.split("/")[1]
+        parts = data.split("|")
+        page_number = int(parts[0].split("_")[2])
+        query = parts[1]
         results = YoutubeSearch(query, max_results=20).to_dict()
         buttons = []
         for i, result in enumerate(results):
             title = result['title'][:40]
             duration = result['duration']
-            buttons.append(InlineKeyboardButton(f"{title} - {duration}", callback_data=result['url_suffix']))
+            buttons.append(InlineKeyboardButton(f"{title} - {duration}", callback_data=f"{query}|{result['url_suffix']}"))
 
         # Pagination: Display only 5 buttons per page
         pages = [buttons[i:i + 5] for i in range(0, len(buttons), 5)]
-        page_buttons = pages[page_number] + [InlineKeyboardButton("Next Page", callback_data=f"next_page_{page_number + 1}")]
+        page_buttons = pages[page_number] + [InlineKeyboardButton("Next Page", callback_data=f"next_page_{page_number + 1}|{query}")]
 
         reply_markup = InlineKeyboardMarkup(page_buttons)
         await callback_query.message.edit_reply_markup(reply_markup=reply_markup)
     else:
         # Handle song selection
-        await download_and_send_audio(client, chat_id, data, callback_query)
+        parts = data.split("|")
+        query = parts[0]
+        url_suffix = parts[1]
+        await download_and_send_audio(client, chat_id, url_suffix, callback_query)

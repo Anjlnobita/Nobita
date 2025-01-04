@@ -80,12 +80,11 @@ async def handle_callback_query(client, callback_query):
         await callback_query.message.edit_text("» Downloading...\n\nPlease wait...")
 
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            info_dict = ydl.extract_info(link, download=False)
+            info_dict = ydl.extract_info(link, download=True)  # Download the file here
             title = info_dict.get('title', 'Unknown title')
             duration = info_dict.get('duration', 0)
             views = info_dict.get('view_count', 0)
             audio_file = ydl.prepare_filename(info_dict)
-            ydl.download([link])
 
         caption = f"**Title:** {title}\n**Duration:** `{time.strftime('%H:%M:%S', time.gmtime(duration))}`\n**Views:** `{views}`\n**Requested by:** {callback_query.from_user.mention}"
 

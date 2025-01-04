@@ -95,7 +95,7 @@ async def handle_callback_query(client, callback_query):
             performer="AnonXMusic",
             title=title,
             duration=duration,
-file_name=f"{title}.mp3",
+file_name=f"{title}.mp3"
         )
 
         audio_data.close()  # Close the BytesIO object when done

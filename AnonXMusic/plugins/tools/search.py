@@ -59,7 +59,7 @@ async def handle_callback_query(client, callback_query):
             {
                 "key": "FFmpegExtractAudio",
                 "preferredcodec": "mp3",
-                "preferredquality": "320",
+                "preferredquality": "3200000",
             }
         ],
     }

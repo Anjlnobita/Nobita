@@ -9,6 +9,10 @@ from AnonXMusic import app
 
 cookies_file = "assets/cookies.txt"
 
+# Ensure the downloads directory exists
+if not os.path.exists("downloads"):
+    os.makedirs("downloads")
+
 # Function to convert time to seconds
 def time_to_seconds(time):
     stringt = str(time)

@@ -6,12 +6,17 @@ import time
 import threading
 from youtube_search import YoutubeSearch
 from AnonXMusic import app
+import re
 
 cookies_file = "assets/cookies.txt"
 
 # Ensure the downloads directory exists
 if not os.path.exists("downloads"):
     os.makedirs("downloads")
+
+# Function to sanitize filenames
+def sanitize_filename(filename):
+    return re.sub(r'[\\/*?:"<>|]', "", filename)
 
 # Function to convert time to seconds
 def time_to_seconds(time):
@@ -82,6 +87,7 @@ async def handle_callback_query(client, callback_query):
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info_dict = ydl.extract_info(link, download=True)  # Download the file here
             title = info_dict.get('title', 'Unknown title')
+            title = sanitize_filename(title)  # Sanitize the title to remove any special characters
             duration = info_dict.get('duration', 0)
             views = info_dict.get('view_count', 0)
             audio_file = ydl.prepare_filename(info_dict)

@@ -6,7 +6,7 @@ from youtube_search import YoutubeSearch
 from AnonXMusic import app
 import time
 import requests
-import urllib
+import urllib3
 
 cookies_file = "assets/cookies.txt"
 

@@ -1,5 +1,6 @@
 from pyrogram import filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+
 import yt_dlp
 import os
 import time
@@ -46,13 +47,13 @@ async def find(client, message):
         results = YoutubeSearch(query, max_results=5).to_dict()
         if not results:
             raise Exception("No results found")
-        
+
         buttons = []
         for result in results:
-            title = result['title'][:40]
+            title = result['title'][:20]
             duration = result['duration']
             buttons.append([InlineKeyboardButton(f"{title} - {duration}", callback_data=result['url_suffix'])])
-        
+
         reply_markup = InlineKeyboardMarkup(buttons)
         await client.send_message(chat_id, "Select a song:", reply_markup=reply_markup)
     except Exception as e:
@@ -71,7 +72,7 @@ async def handle_callback_query(client, callback_query):
         "outtmpl": "downloads/%(title)s.%(ext)s",
         "quiet": True,
         "no_warnings": True,
-        "cookiefile": cookies_file,  # Use cookies.txt for authentication
+        "cookiefile": cookies_file,
         "postprocessors": [
             {
                 "key": "FFmpegExtractAudio",
@@ -85,9 +86,9 @@ async def handle_callback_query(client, callback_query):
         await callback_query.message.edit_text("» Downloading...\n\nPlease wait...")
 
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            info_dict = ydl.extract_info(link, download=True)  # Download the file here
+            info_dict = ydl.extract_info(link, download=True)
             title = info_dict.get('title', 'Unknown title')
-            title = sanitize_filename(title)  # Sanitize the title to remove any special characters
+            title = sanitize_filename(title)
             duration = info_dict.get('duration', 0)
             views = info_dict.get('view_count', 0)
             audio_file = ydl.prepare_filename(info_dict)
@@ -104,7 +105,6 @@ async def handle_callback_query(client, callback_query):
             duration=duration_sec,
         )
 
-        # Start a thread to delete the file after 20 minutes
         threading.Thread(target=delete_file_after_delay, args=(audio_file,)).start()
     except Exception as e:
         await client.send_message(chat_id, f"**» Downloading error, please report this at » [Support Chat](t.me/SUPPORT_CHAT) 💕**\n\n**Error:** {e}")

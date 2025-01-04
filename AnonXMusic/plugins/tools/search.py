@@ -4,7 +4,7 @@ import yt_dlp
 import os
 import time
 import threading
-from .logging import LOGGER 
+from AnonXMusic.logging import logger 
 from AnonXMusic import app  # Importing the existing app
 
 

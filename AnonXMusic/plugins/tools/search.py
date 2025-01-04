@@ -45,7 +45,7 @@ async def download_and_send_audio(client, chat_id, url_suffix, callback_data=Non
         duration = results[0]["duration"]
         views = results[0]["views"]
     except Exception as e:
-        await client.send_message(chat_id, f"**😴 Song not found on YouTube.**\n\n» Please check the spelling and try again! Error: {e}")
+        await client.send_message(chat_id, f"**😴 Song not found Error: {e}")
         print(f"Error in download_and_send_audio: {str(e)}")
         return
 
@@ -109,7 +109,7 @@ async def find(client, message):
         reply_markup = InlineKeyboardMarkup(page_buttons)
         await client.send_message(chat_id, "Select a song:", reply_markup=reply_markup)
     except Exception as e:
-        await client.send_message(chat_id, f"**😴 Song not found on YouTube.**\n\n» Please check the spelling and try again! Error: {e}")
+        await client.send_message(chat_id, f"**😴 Song not found Error: {e}")
         print(f"Error in find: {str(e)}")
 
 # Callback query handler for inline buttons

@@ -9,6 +9,8 @@ import requests
 from youtube_search import YoutubeSearch
 from AnonXMusic import app
 
+cookies_file = "assets/cookies.txt"
+
 # Function to convert time to seconds
 def time_to_seconds(time):
     stringt = str(time)
@@ -27,7 +29,7 @@ async def download_and_send_audio(client, chat_id, url_suffix, callback_data=Non
         "outtmpl": "downloads/%(title)s.%(ext)s",
         "quiet": True,
         "no_warnings": True,
-        "cookiefile": "cookies.txt",  # Use cookies.txt for authentication
+        "cookiefile": "cookies_file",  # Use cookies.txt for authentication
         "postprocessors": [
             {
                 "key": "FFmpegExtractAudio",

@@ -104,6 +104,7 @@ async def find(client, message):
 
         # Pagination: Display only 5 buttons per page
         pages = [buttons[i:i + 5] for i in range(0, len(buttons), 5)]
+        page_data = {"pages": pages, "current_page": 0}
         page_buttons = pages[0] + [InlineKeyboardButton("Next Page", callback_data=f"next_page_1|{query}")]
 
         reply_markup = InlineKeyboardMarkup(page_buttons)

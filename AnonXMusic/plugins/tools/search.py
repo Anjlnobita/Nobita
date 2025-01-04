@@ -58,8 +58,11 @@ async def handle_callback_query(client, callback_query):
         "postprocessors": [
             {
                 "key": "FFmpegExtractAudio",
-                "preferredcodec": "mp3",
+                "preferredcodec": "m4a",
                 "preferredquality": "3200000",
+                "audio_bitrate": "384000k",    
+                "audio_channels": 2,
+                "audio_sample_rate": "1024000"
             }
         ],
     }
@@ -95,7 +98,7 @@ async def handle_callback_query(client, callback_query):
             performer="ʜɪɴ͟ᴀᴛᴀ ꭙ ͟ᴍᴜsɪ͟ᴄ🌸",
             title=title,
             duration=duration,
-file_name=f"{title}.mp3"
+file_name=f"{title}.m4a"
         )
 
         audio_data.close()  # Close the BytesIO object when done

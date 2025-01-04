@@ -12,7 +12,7 @@ cookies_file = "assets/cookies.txt"
 # Function to convert time to seconds
 def time_to_seconds(time):
     stringt = str(time)
-    return sum(int(x) * 60**i for i, x in enumerate(reversed(stringt.split(":"))))
+    return sum(int(x) * 60 ** i for i, x in enumerate(reversed(stringt.split(":"))))
 
 # Function to delete file after 20 minutes
 def delete_file_after_delay(file_path, delay=1200):

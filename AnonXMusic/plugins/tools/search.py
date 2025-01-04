@@ -92,7 +92,7 @@ async def handle_callback_query(client, callback_query):
             chat_id,
             audio=audio_data,
             caption=caption,
-            performer="AnonXMusic",
+            performer="ʜɪɴ͟ᴀᴛᴀ ꭙ ͟ᴍᴜsɪ͟ᴄ🌸",
             title=title,
             duration=duration,
 file_name=f"{title}.mp3"

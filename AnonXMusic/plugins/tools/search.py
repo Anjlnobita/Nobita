@@ -8,7 +8,7 @@ import requests
 from youtube_search import YoutubeSearch
 from AnonXMusic import app
 
-cookies_file = "assets/cookies.txt"
+
 
 # Function to convert time to seconds
 def time_to_seconds(time):
@@ -28,7 +28,7 @@ async def download_and_send_audio(client, chat_id, url_suffix, callback_data=Non
         "outtmpl": "downloads/%(title)s.%(ext)s",
         "quiet": True,
         "no_warnings": True,
-        "cookiefile": "cookies_file",  # Use cookies.txt for authentication
+        "cookiefile": "cookies.txt",  # Use cookies.txt for authentication
         "postprocessors": [
             {
                 "key": "FFmpegExtractAudio",
@@ -39,13 +39,15 @@ async def download_and_send_audio(client, chat_id, url_suffix, callback_data=Non
     }
     try:
         link = f"https://youtube.com{url_suffix}"
-        results = YoutubeSearch(url_suffix, max_results=1).to_dict()
+        results = YoutubeSearch(link, max_results=1).to_dict()
+        if not results:
+            raise Exception("No results found")
         title = results[0]["title"][:40]
         duration = results[0]["duration"]
         views = results[0]["views"]
     except Exception as e:
-        await client.send_message(chat_id, "**😴 Song not found**")
-        print(str(e))
+        await client.send_message(chat_id, f"**😴 Song not found on YouTube.**\n\n» Please check the spelling and try again! Error: {e}")
+        print(f"Error in download_and_send_audio: {str(e)}")
         return
 
     if callback_data:
@@ -72,13 +74,13 @@ async def download_and_send_audio(client, chat_id, url_suffix, callback_data=Non
         )
     except Exception as e:
         await client.send_message(chat_id, f"**» Downloading error, please report this at » [Support Chat](t.me/SUPPORT_CHAT) 💕**\n\n**Error:** {e}")
-        print(e)
+        print(f"Error in downloading and sending audio: {str(e)}")
         return
     finally:
         try:
             os.remove(audio_file)
         except Exception as e:
-            print(e)
+            print(f"Error in deleting audio file: {str(e)}")
 
 # Command handler for /find, /song, and /fsong
 @app.on_message(filters.command(["find", "song", "fsong"], prefixes=["/", "!"]))
@@ -92,6 +94,8 @@ async def find(client, message):
 
     try:
         results = YoutubeSearch(query, max_results=20).to_dict()
+        if not results:
+            raise Exception("No results found")
         buttons = []
         for i, result in enumerate(results):
             title = result['title'][:40]
@@ -106,8 +110,8 @@ async def find(client, message):
         reply_markup = InlineKeyboardMarkup(page_buttons)
         await client.send_message(chat_id, "Select a song:", reply_markup=reply_markup)
     except Exception as e:
-        await client.send_message(chat_id, "**😴 Song not found on YouTube.**\n\n» Please check the spelling and try again!")
-        print(str(e))
+        await client.send_message(chat_id, f"**😴 Song not found on YouTube.**\n\n» Please check the spelling and try again! Error: {e}")
+        print(f"Error in find: {str(e)}")
 
 # Callback query handler for inline buttons
 @app.on_callback_query()
@@ -118,6 +122,7 @@ async def handle_callback_query(client, callback_query):
     if data.startswith("next_page_"):
         # Handle pagination
         page_number = int(data.split("_")[2])
+        query = callback_query.message.reply_markup.inline_keyboard[0][0].callback_data.split("/")[1]
         results = YoutubeSearch(query, max_results=20).to_dict()
         buttons = []
         for i, result in enumerate(results):

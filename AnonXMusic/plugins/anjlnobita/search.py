@@ -6,8 +6,6 @@ from youtube_search import YoutubeSearch
 from AnonXMusic import app
 import time
 import requests
-import urllib.parse
-import urllib.parse as urllib
 
 cookies_file = "assets/cookies.txt"
 
@@ -22,7 +20,6 @@ async def find(client, message):
     chat_id = message.chat.id
     try:
         query = " ".join(message.command[1:])
-        query = urllib.parse.quote_plus(query)
         if not query:
             await client.send_message(chat_id, "Please provide a song name to search.")
             return

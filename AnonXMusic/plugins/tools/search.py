@@ -1,16 +1,18 @@
-from pyrogram import Client, filters
+from pyrogram import filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 import yt_dlp
 import os
 import time
 import threading
-from AnonXMusic import app
+from AnonXMusic import app  # Importing the existing app
 
 # Path to cookies file
 cookies_file = "assets/cookies.txt"
 
 # Function to search songs (You need to implement actual search logic)
 def search_songs(query, offset=0, limit=10):
+    # This should be replaced with actual search logic
+    # Mocking search results with song names and durations
     return [(f"{query} Song {i+1 + offset}", f"{(i+1 + offset) * 60} seconds") for i in range(limit)]
 
 # Function to download song from YouTube in M4A format
@@ -52,12 +54,12 @@ def delete_file_after_delay(file_path, delay=1200):
 
 # Command handler for /find, /song, and /fsong
 @app.on_message(filters.command(["find", "song", "fsong"], prefixes=["/", "!"]))
-def find(client, message):
+async def find(client, message):
     chat_id = message.chat.id
     try:
         query = message.text.split(maxsplit=1)[1]
     except IndexError:
-        client.send_message(chat_id, "Please provide a song name to search.")
+        await client.send_message(chat_id, "Please provide a song name to search.")
         return
 
     songs = search_songs(query)
@@ -67,11 +69,11 @@ def find(client, message):
 
     reply_markup = InlineKeyboardMarkup(buttons)
 
-    client.send_message(chat_id, "Select a song:", reply_markup=reply_markup)
+    await client.send_message(chat_id, "Select a song:", reply_markup=reply_markup)
 
 # Callback query handler for inline buttons
 @app.on_callback_query()
-def handle_callback_query(client, callback_query):
+async def handle_callback_query(client, callback_query):
     chat_id = callback_query.message.chat.id
     data = callback_query.data
 
@@ -86,13 +88,13 @@ def handle_callback_query(client, callback_query):
 
         reply_markup = InlineKeyboardMarkup(buttons)
 
-        callback_query.message.edit_reply_markup(reply_markup=reply_markup)
+        await callback_query.message.edit_reply_markup(reply_markup=reply_markup)
     else:
         song_name = data
         file_path = download_song(song_name, cookies_file)
 
         if file_path:
-            client.send_document(chat_id, document=file_path)
+            await client.send_document(chat_id, document=file_path)
             threading.Thread(target=delete_file_after_delay, args=(file_path,)).start()
         else:
-            client.send_message(chat_id, f"Failed to download {song_name}. Please try again.")
+            await client.send_message(chat_id, f"Failed to download {song_name}. Please try again.")

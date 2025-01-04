@@ -1,10 +1,10 @@
 from pyrogram import filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 import yt_dlp
-import time
 from io import BytesIO
 from youtube_search import YoutubeSearch
 from AnonXMusic import app
+import time
 
 cookies_file = "assets/cookies.txt"
 
@@ -30,13 +30,13 @@ async def find(client, message):
         results = YoutubeSearch(query, max_results=5).to_dict()
         if not results:
             raise Exception("No results found")
-        
+
         buttons = []
         for result in results:
             title = result['title'][:40]
             duration = result['duration']
             buttons.append([InlineKeyboardButton(f"• {duration} {title}", callback_data=result['url_suffix'])])
-        
+
         reply_markup = InlineKeyboardMarkup(buttons)
         await client.send_message(chat_id, "Select a song:", reply_markup=reply_markup)
     except Exception as e:
@@ -63,10 +63,12 @@ async def handle_callback_query(client, callback_query):
             }
         ],
     }
+
     try:
         link = f"https://youtube.com{url_suffix}"
         await callback_query.message.edit_text("» Downloading...\n\nPlease wait...")
 
+        # Download and convert video to audio in memory
         audio_data = BytesIO()
 
         def hook(d):
@@ -76,7 +78,7 @@ async def handle_callback_query(client, callback_query):
                 audio_data.seek(0)
 
         ydl_opts['progress_hooks'] = [hook]
-        ydl_opts['outtmpl'] = 'downloads/%(id)s.%(ext)s'
+        ydl_opts['outtmpl'] = '%(id)s.%(ext)s'  # Temporary filename
 
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info_dict = ydl.extract_info(link, download=True)
@@ -94,6 +96,8 @@ async def handle_callback_query(client, callback_query):
             title=title,
             duration=duration,
         )
+
+        audio_data.close()  # Close the BytesIO object when done
 
     except Exception as e:
         await client.send_message(chat_id, f"» Downloading error: {e}")

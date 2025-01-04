@@ -7,6 +7,7 @@ from AnonXMusic import app
 import time
 import requests
 import urllib.parse
+import urllib.parse as urllib
 
 cookies_file = "assets/cookies.txt"
 

@@ -33,9 +33,9 @@ async def find(client, message):
         
         buttons = []
         for result in results:
-            title = result['title'][:30]
+            title = result['title'][:40]
             duration = result['duration']
-            buttons.append([InlineKeyboardButton(f"•{duration} - {title}", callback_data=result['url_suffix'])])
+            buttons.append([InlineKeyboardButton(f"• {duration} {title}", callback_data=result['url_suffix'])])
         
         reply_markup = InlineKeyboardMarkup(buttons)
         await client.send_message(chat_id, "Select a song:", reply_markup=reply_markup)
